@@ -10,8 +10,6 @@ import requests
 import json
 from pathlib import Path
 
-from icecream import ic
-
 
 class BeetsLMSPlugin(BeetsPlugin):
     # Default headers for HTTP requests
@@ -42,7 +40,6 @@ class BeetsLMSPlugin(BeetsPlugin):
         self.listener_method = (
             config["beets_lms"]["listener_method"].as_str().to_lower()
         )
-        ic(self.listener_method)
         if self.listener_method == "full":
             self.register_listener("import", self._rescan_library)
         if self.listener_method == "path":
@@ -133,7 +130,6 @@ class BeetsLMSPlugin(BeetsPlugin):
             commands = ["rescan"]
         else:
             commands = ["rescan", "full", f"file://{self.library_root}{path}"]
-        ic(commands)
         payload = {
             "id": 1,
             "method": "slim.request",
@@ -144,7 +140,6 @@ class BeetsLMSPlugin(BeetsPlugin):
             response = requests.post(
                 self.server_url, headers=self.headers, data=json.dumps(payload)
             )
-            ic(response)
             response.raise_for_status()
             self._log.info("LMS library rescan triggered.")
         except requests.exceptions.RequestException as e:
