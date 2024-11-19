@@ -23,7 +23,7 @@ Configure the hostname or ip address for your LMS server:
 
 ```
 beets_lms:
-  host: 192.168.255.16
+  host: mylmshost.example.com
 ```
 
 All available options (and their defaults):
