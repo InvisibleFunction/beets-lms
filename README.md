@@ -23,7 +23,18 @@ Configure the hostname or ip address for your LMS server:
 
 ```
 beets_lms:
-  host: 192.168.255.16
+  host: mylmshost.example.com
+```
+
+All available options (and their defaults):
+
+```
+beets_lms:
+  host: localhost
+  port: "9000" # Must be a string
+  secure: False # HTTPS is untested
+  library_root: "/music" # Where your library is mounted on your LMS server
+  listener_method: full # `full` runs a full scan after every import, `path` is less tested
 ```
 
 ## Functionality
@@ -31,6 +42,7 @@ beets_lms:
 * `import` listener to trigger rescan on import
 * `lmsstatus` subcommand to check scanning status
 * `lmsrescan` subcommand to manually trigger rescan
+* `lmspathscan` subcommand to manually trigger a rescan on a path
 
 ```
 me@compy:~$ beet lmsstatus
@@ -40,5 +52,3 @@ beets-lms: LMS library rescan triggered.
 me@compy:~$ beet lmsstatus
 beets-lms: LMS Library scan in progress
 ```
-
-
