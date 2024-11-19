@@ -95,6 +95,12 @@ class BeetsLMSPlugin(BeetsPlugin):
         rel_path = full_item_path.relative_to(root_directory)
         self.trigger_rescan(path=rel_path)
 
+    def _rescan_path(self, lib, opts, args):
+        full_item_path = Path(args[0])
+        root_directory = Path(config["directory"].as_str())
+        rel_path = full_item_path.relative_to(root_directory)
+        self.trigger_rescan(path=rel_path)
+
     def _scan_status(self):
         if self.is_currently_scanning():
             self._log.info("LMS Library scan in progress")
