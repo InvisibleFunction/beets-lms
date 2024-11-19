@@ -4,8 +4,8 @@ Beets Plugin to facilitate interactions with Lyrion Music Server
 
 from beets.plugins import BeetsPlugin
 from beets.ui import Subcommand
-from beets.util import ConfigError
 from beets import config
+from confuse import ConfigError
 import requests
 import json
 from pathlib import Path
@@ -37,19 +37,21 @@ class BeetsLMSPlugin(BeetsPlugin):
         self.server_url = f"{self.proto}://{self.host}:{self.port}/jsonrpc.js"
         self.library_root = config["beets_lms"]["library_root"].as_str()
 
-        self.listener_method = (
-            config["beets_lms"]["listener_method"].as_str().to_lower()
-        )
+        # There are two ways this plugin can run, via the "import" listener or via the
+        # "album_imported" listener. The "album_imported" option seems better because you
+        # could run targeted rescans instead of full rescans, but LMS still runs a full
+        # Slim::Plugin::FullTextSearch::Plugin Scan for every Full scan with a path.
+        self.listener_method = config["beets_lms"]["listener_method"].as_str().lower()
         if self.listener_method == "full":
             self.register_listener("import", self._rescan_library)
-        if self.listener_method == "path":
+        elif self.listener_method == "path":
             self.register_listener("album_imported", self._rescan_album)
         else:
             raise ConfigError("listener_method must be full or path")
 
     def commands(self):
         """
-        Function to hold command defs
+        Function to hold command definitions
         """
         # Initiate an LMS Library Scan
         rescan_library_cmd = Subcommand(
@@ -101,7 +103,7 @@ class BeetsLMSPlugin(BeetsPlugin):
 
     def is_currently_scanning(self):
         """
-        Returns true is LMS is currently scanning the library
+        Returns true if LMS is currently scanning the library
         """
         # https://lyrion.org/reference/cli/database/#rescan
         payload = {
@@ -123,7 +125,8 @@ class BeetsLMSPlugin(BeetsPlugin):
 
     def trigger_rescan(self, path=None):
         """
-        Initiates a rescan of the LMS library
+        Initiates a rescan of the LMS library. It rescans the whole library unless
+        a path is given in which case it will just scan the given path.
         """
         # https://lyrion.org/reference/cli/database/#rescan
         if not path:
