@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='beets-lms',
-    version='0.0.3',
+    version='0.0.6',
     description='beets plugin for Lyrion Music Server',
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
